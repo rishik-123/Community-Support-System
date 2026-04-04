@@ -1,0 +1,25 @@
+import axios from 'axios';
+
+const API = axios.create({
+  baseURL: 'http://localhost:5001',
+});
+
+// Attach JWT to every request
+API.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Auth
+export const loginAdmin = (data) => API.post('/api/admin/login', data);
+
+// Donor
+export const searchDonor = (query) => API.get(`/api/donor/search/${encodeURIComponent(query)}`);
+
+// Receipts
+export const addDonation = (data) => API.post('/api/receipt/donate', data);
+export const getReceiptByNumber = (receiptNo) => API.get(`/api/receipt/receipt/${receiptNo}`);
+export const downloadReceiptUrl = (receiptNo) => `http://localhost:5001/api/receipt/download/${receiptNo}`;
