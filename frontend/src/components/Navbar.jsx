@@ -24,6 +24,9 @@ export default function Navbar() {
         <Link to="/donate" className={`nav-link ${location.pathname === '/donate' ? 'active' : ''}`}>
           New Donation
         </Link>
+        <Link to="/register-donor" className={`nav-link ${location.pathname === '/register-donor' ? 'active' : ''}`}>
+          Register Donor
+        </Link>
         <Link to="/invoice" className={`nav-link ${location.pathname === '/invoice' ? 'active' : ''}`}>
           Invoice Lookup
         </Link>

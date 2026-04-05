@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import DonationForm from './pages/DonationForm';
+import DonorRegistration from './pages/DonorRegistration';
 import InvoiceLookup from './pages/InvoiceLookup';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
@@ -24,6 +25,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Layout><DonationForm /></Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/register-donor"
+          element={
+            <ProtectedRoute>
+              <Layout><DonorRegistration /></Layout>
             </ProtectedRoute>
           }
         />

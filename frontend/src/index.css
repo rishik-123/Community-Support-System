@@ -212,13 +212,18 @@ body {
 .radio-option { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; }
 .radio-option input { accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer; }
 
-/* ── PAN/Aadhaar chip ───────────────────────────── */
+/* ── PAN/Aadhaar lookup badge ───────────────────── */
 .lookup-badge {
   display: inline-flex; align-items: center; gap: 6px;
-  background: #ede9fe; color: var(--primary);
-  border-radius: 6px; padding: 3px 10px;
+  border-radius: 6px; padding: 5px 12px;
   font-size: 12px; font-weight: 500;
-  margin-bottom: 6px;
+  margin-bottom: 10px;
+}
+.lookup-found {
+  background: #f0fdf4; color: #16a34a; border: 1px solid #86efac;
+}
+.lookup-new {
+  background: #fffbeb; color: #92400e; border: 1px solid #fcd34d;
 }
 
 /* ── Receipt Info Table ─────────────────────────── */
