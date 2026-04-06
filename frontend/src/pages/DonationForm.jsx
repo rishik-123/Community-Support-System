@@ -53,7 +53,19 @@ export default function DonationForm() {
     e.preventDefault();
     setError('');
     setSubmitting(true);
+    if (!form.purpose || form.purpose.trim() === '') {
+      setError('Purpose is required.');
+      setSubmitting(false);
+      return;
+    }
+
     try {
+      if (!/^\d{10}$/.test(form.phone.trim())) {
+        setError('Phone Number must be exactly 10 digits.');
+        setSubmitting(false);
+        return;
+      }
+
       const res = await addDonation({
         fullName: form.fullName,
         phone:    form.phone,
@@ -140,6 +152,7 @@ export default function DonationForm() {
                   onChange={handleChange}
                   onBlur={e => e.target.value && handleLookup(e.target.value)}
                   placeholder="10-digit mobile number"
+                  maxLength="10"
                   required
                 />
               </div>
@@ -183,13 +196,14 @@ export default function DonationForm() {
             {/* ── Row 3: Purpose ── */}
             <div className="form-row">
               <div className="form-group">
-                <label className="form-label">Purpose</label>
+                <label className="form-label">Purpose *</label>
                 <input
                   className="form-input"
                   name="purpose"
                   value={form.purpose}
                   onChange={handleChange}
                   placeholder="e.g. Education Fund, General"
+                  required
                 />
               </div>
               <div className="form-group">

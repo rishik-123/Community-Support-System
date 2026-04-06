@@ -7,6 +7,7 @@ const EMPTY_FORM = {
   email: '',
   phone: '',
   address: '',
+  nearestRailwayStation: '',
   pan: '',
   aadhaar: '',
   panFile: null,
@@ -34,8 +35,32 @@ export default function DonorRegistration() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.phone || form.phone.trim() === '') {
-      setError('Phone Number is required to register a donor.');
+    if (!/^\d{10}$/.test(form.phone.trim())) {
+      setError('Phone Number must be exactly 10 digits.');
+      return;
+    }
+    if (!form.address || form.address.trim() === '') {
+      setError('Address is required.');
+      return;
+    }
+    if (!form.nearestRailwayStation || form.nearestRailwayStation.trim() === '') {
+      setError('Nearest Railway Station is required.');
+      return;
+    }
+    if (!/^[a-zA-Z0-9]{10}$/.test(form.pan.trim())) {
+      setError('PAN Number must be exactly 10 alphanumeric characters.');
+      return;
+    }
+    if (!/^\d{12}$/.test(form.aadhaar.trim())) {
+      setError('Aadhaar Number must be exactly 12 digits.');
+      return;
+    }
+    if (!form.panFile) {
+      setError('PAN Card Image upload is required.');
+      return;
+    }
+    if (!form.aadhaarFile) {
+      setError('Aadhaar Card Image upload is required.');
       return;
     }
     
@@ -49,6 +74,7 @@ export default function DonorRegistration() {
       if (form.email) formData.append('email', form.email);
       formData.append('mobile', form.phone);
       if (form.address) formData.append('address', form.address);
+      if (form.nearestRailwayStation) formData.append('nearestRailwayStation', form.nearestRailwayStation);
       if (form.pan) formData.append('pan', form.pan);
       if (form.aadhaar) formData.append('aadhaar', form.aadhaar);
       if (form.panFile) formData.append('panFile', form.panFile);
@@ -125,49 +151,72 @@ export default function DonorRegistration() {
                   value={form.phone}
                   onChange={handleChange}
                   placeholder="10-digit mobile number"
+                  maxLength="10"
                   required
                 />
               </div>
               <div className="form-group">
-                <label className="form-label">Residential / Billing Address</label>
+                <label className="form-label">Residential / Billing Address *</label>
                 <input
                   className="form-input"
                   name="address"
                   value={form.address}
                   onChange={handleChange}
-                  placeholder="Full address (optional)"
+                  placeholder="Full address"
+                  required
                 />
               </div>
             </div>
 
-            {/* ── Row 3: PAN & Aadhaar Strings ── */}
+            {/* ── Row 3: PAN, Aadhaar & Station Strings ── */}
             <div className="form-row">
               <div className="form-group">
-                <label className="form-label">PAN Number</label>
+                <label className="form-label">PAN Number *</label>
                 <input
                   className="form-input"
                   name="pan"
                   value={form.pan}
                   onChange={handleChange}
-                  placeholder="10-character PAN (optional)"
+                  placeholder="10-character PAN"
+                  maxLength="10"
+                  required
                 />
               </div>
               <div className="form-group">
-                <label className="form-label">Aadhaar Number</label>
+                <label className="form-label">Aadhaar Number *</label>
                 <input
                   className="form-input"
                   name="aadhaar"
                   value={form.aadhaar}
                   onChange={handleChange}
-                  placeholder="12-digit Aadhaar (optional)"
+                  placeholder="12-digit Aadhaar"
+                  maxLength="12"
+                  required
                 />
+              </div>
+            </div>
+            
+            <div className="form-row">
+              <div className="form-group">
+                <label className="form-label">Nearest Railway Station *</label>
+                <input
+                  className="form-input"
+                  name="nearestRailwayStation"
+                  value={form.nearestRailwayStation}
+                  onChange={handleChange}
+                  placeholder="e.g. Borivali"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                {/* Empty block for equal spacing */}
               </div>
             </div>
 
             {/* ── Row 4: PAN & Aadhaar Files ── */}
             <div className="form-row">
               <div className="form-group">
-                <label className="form-label">Upload PAN Card Image (Optional)</label>
+                <label className="form-label">Upload PAN Card Image *</label>
                 <input
                   className="form-input"
                   type="file"
@@ -175,10 +224,11 @@ export default function DonorRegistration() {
                   accept="image/*,application/pdf"
                   onChange={handleChange}
                   style={{ padding: '8px' }}
+                  required
                 />
               </div>
               <div className="form-group">
-                <label className="form-label">Upload Aadhaar Card Image (Optional)</label>
+                <label className="form-label">Upload Aadhaar Card Image *</label>
                 <input
                   className="form-input"
                   type="file"
@@ -186,6 +236,7 @@ export default function DonorRegistration() {
                   accept="image/*,application/pdf"
                   onChange={handleChange}
                   style={{ padding: '8px' }}
+                  required
                 />
               </div>
             </div>

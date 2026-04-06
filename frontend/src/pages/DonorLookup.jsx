@@ -87,6 +87,7 @@ export default function DonorLookup() {
               <div><strong>PAN Number:</strong><br/>{donor.pan || '-'}</div>
               <div><strong>Aadhaar Number:</strong><br/>{donor.aadhaar || '-'}</div>
               <div><strong>Address:</strong><br/>{donor.address || '-'}</div>
+              <div><strong>Nearest Railway Station:</strong><br/>{donor.nearestRailwayStation || '-'}</div>
             </div>
           </div>
 

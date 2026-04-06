@@ -19,6 +19,7 @@ const donorSchema = new mongoose.Schema({
   mobile: String,
   email: String,
   address: String,
+  nearestRailwayStation: String,
   pan: String,
   aadhaar: String,
   panFile: { data: Buffer, contentType: String },
