@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import DonationForm from './pages/DonationForm';
 import DonorRegistration from './pages/DonorRegistration';
+import PublicRegistration from './pages/PublicRegistration';
 import InvoiceLookup from './pages/InvoiceLookup';
 import DonorLookup from './pages/DonorLookup';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -53,7 +54,9 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<Navigate to="/donate" replace />} />
+        <Route path="/" element={<PublicRegistration />} />
+        <Route path="/register" element={<PublicRegistration />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

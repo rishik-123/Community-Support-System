@@ -24,6 +24,11 @@ export const addDonor = (data) => API.post('/api/donor/add', data, {
     'Content-Type': 'multipart/form-data'
   }
 });
+export const addPublicDonor = (data) => axios.post('http://localhost:5001/api/donor/add', data, {
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
+});
 
 // Receipts
 export const addDonation = (data) => API.post('/api/receipt/donate', data);
