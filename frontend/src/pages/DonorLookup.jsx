@@ -56,7 +56,7 @@ export default function DonorLookup() {
       </div>
 
       <div className="card">
-        <form onSubmit={handleSearch} style={{ display: 'flex', gap: '12px', alignItems: 'flex-end', marginBottom: '16px' }}>
+        <form onSubmit={handleSearch} style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'flex-end', marginBottom: '16px' }}>
           <div className="form-group" style={{ flex: 1, minWidth: '250px', margin: 0 }}>
             <label className="form-label">Donor Phone Number</label>
             <input

@@ -231,3 +231,27 @@ body {
 .receipt-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 14px; }
 .receipt-table td:first-child { font-weight: 600; color: var(--text-muted); width: 40%; }
 .receipt-table tr:last-child td { border-bottom: none; }
+
+/* ── Mobile & Responsive Breakpoints ────────────── */
+@media (max-width: 768px) {
+  /* Layout adjustments */
+  .main-content { padding: 20px 16px; }
+  .page-container { padding: 10px; }
+  .card { padding: 20px 16px; }
+  
+  /* Navbar adjustments */
+  .navbar { padding: 0 16px; height: auto; min-height: 64px; flex-wrap: wrap; gap: 12px; padding-top: 10px; padding-bottom: 10px; }
+  .navbar-brand { width: 100%; justify-content: space-between; }
+  .navbar-links { width: 100%; justify-content: space-between; overflow-x: auto; padding-bottom: 4px; }
+  .navbar-right { width: 100%; justify-content: flex-end; }
+  
+  /* Form Grids to Stacked */
+  .form-row, .form-row-3 { grid-template-columns: 1fr; gap: 0; }
+  
+  /* Logins */
+  .login-card { padding: 32px 24px; }
+  
+  /* Headers */
+  .page-header h2 { font-size: 18px; }
+  .page-header p { font-size: 13px; }
+}
