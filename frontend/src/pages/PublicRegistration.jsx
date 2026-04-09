@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { addPublicDonor } from '../services/api';
+import { Link } from 'react-router-dom';
 
 const EMPTY_FORM = {
   fullName: '',
@@ -241,6 +242,15 @@ export default function PublicRegistration() {
               </button>
             </form>
           )}
+        </div>
+
+        <div style={{ textAlign: 'center', marginTop: '24px' }}>
+          <p style={{ color: '#666', fontSize: '14px' }}>
+            Are you an administrator?{' '}
+            <Link to="/login" style={{ color: '#4facfe', textDecoration: 'none', fontWeight: 500 }}>
+              Login here
+            </Link>
+          </p>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { loginAdmin } from '../services/api';
 
 export default function Login() {
@@ -71,7 +71,12 @@ export default function Login() {
           </button>
         </form>
 
-        <p className="login-footer">Administrator access only</p>
+        <div className="login-footer" style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <span>Administrator access only</span>
+          <Link to="/" style={{ color: '#4facfe', textDecoration: 'none', fontWeight: 500 }}>
+            Public Donor Registration Form →
+          </Link>
+        </div>
       </div>
     </div>
   );
