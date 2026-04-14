@@ -72,22 +72,25 @@ exports.generateReceiptPDF = (donor, donation) => {
     let startY = 60;
     if (fs.existsSync(logoPath)) {
         doc.image(logoPath, (pageWidth - 90) / 2, startY, { fit: [90, 90] });
-        startY += 105;
+        startY += 95;
     }
 
     // Classic Certificate Title (Times-Roman)
     doc.font('Times-Roman')
-       .fontSize(24)
+       .fontSize(22)
        .fillColor('#222222')
-       .text('Samastha Darji Samaj', 0, startY, { align: 'center', width: pageWidth });
+       .text('Samastha Darji Samaj Babariyawad, Mumbai', 0, startY, { align: 'center', width: pageWidth });
     
-    startY += 28;
-    
-    doc.font('Times-Roman')
-       .fontSize(24)
-       .text('Babariyawad Mumbai', 0, startY, { align: 'center', width: pageWidth });
-       
     startY += 35;
+
+    // Samaj Details
+    doc.font('Helvetica')
+       .fontSize(10)
+       .fillColor('#555555')
+       .text('Office address - 8, Hirvi Chawl, Sane Guruji Marg, Tardeo, Mumbai 400034', 0, startY, { align: 'center', width: pageWidth });
+    startY += 15;
+    doc.text('Samaj PAN : AAGTS1081B', 0, startY, { align: 'center', width: pageWidth });
+    startY += 25;
 
     // Elegant Divider Center Ornament
     const cX = pageWidth / 2;
@@ -111,7 +114,7 @@ exports.generateReceiptPDF = (donor, donation) => {
        .strokeColor(goldColor)
        .stroke();
 
-    startY += 35;
+    startY += 30;
 
     // Subtitle
     doc.font('Times-Roman')
@@ -119,7 +122,7 @@ exports.generateReceiptPDF = (donor, donation) => {
        .fillColor('#333333')
        .text('DONATION RECEIPT', 0, startY, { align: 'center', width: pageWidth });
     
-    startY += 45;
+    startY += 35;
 
     // Aggregate Fields to Print
     const refDate = donation.date ? new Date(donation.date) : new Date();
@@ -132,9 +135,9 @@ exports.generateReceiptPDF = (donor, donation) => {
         ['Email', donation.email || donor.email || 'N/A'],
         ['Phone', donation.phone || donor.mobile || '-'],
         ['Address', donor.address || '-'],
-        ['PAN / Tax ID', donor.pan || '-'],
+        ['Donor PAN ID', donor.pan || '-'],
         ['Aadhaar', donor.aadhaar || '-'],
-        ['Campaign', donation.purpose || 'General'],
+        ['Nature of Donation', donation.purpose || 'General'],
         ['Payment Mode', donation.mode || '-'],
     ];
 
@@ -193,11 +196,12 @@ exports.generateReceiptPDF = (donor, donation) => {
        .fillColor('#666666')
        .text(`(Rupees ${wordAmount} Only)`, colLeft, startY);
 
-    // Fine Print Footer
+    // Fine Print Footer (Dynamic Y to prevent overlap)
+    const footerY = Math.max(startY + 40, pageHeight - 85);
     doc.font('Helvetica')
        .fontSize(10)
        .fillColor('#A09F9C')
-       .text('Computer generated receipt. Thank you for your donation.', 0, pageHeight - 85, { align: 'center', width: pageWidth });
+       .text('Computer generated receipt. Thank you for your donation.', 0, footerY, { align: 'center', width: pageWidth });
 
     doc.end();
   });
