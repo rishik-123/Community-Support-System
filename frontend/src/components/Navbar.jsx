@@ -45,9 +45,12 @@ export default function Navbar() {
         <Link to="/donors" className={`nav-link ${location.pathname === '/donors' ? 'active' : ''}`}>
           All Donors
         </Link>
+        <Link to="/manage-pins" className={`nav-link ${location.pathname === '/manage-pins' ? 'active' : ''}`}>
+          Access Management
+        </Link>
       </div>
       <div className="navbar-right">
-        <span className="navbar-user">👤 {username}</span>
+        <span className="navbar-user">📍 {username}</span>
         <button className="btn-logout" onClick={handleLogout}>Logout</button>
       </div>
     </nav>

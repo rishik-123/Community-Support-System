@@ -1,26 +1,90 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const Donor = require('../models/donor');
+const AuthPin = require('../models/AuthPin');
 
-const ADMINS = [
-  { username: 'admin1', password: 'admin1_pass_13579' },
-  { username: 'admin2', password: 'admin2_pass_98765' },
-  { username: 'admin3', password: 'admin3_pass_43210' },
-];
+// Initial administrator bootstrap: Use this to log in if no PINs exist in the DB.
+const BOOTSTRAP_PIN = '5173'; 
 
-exports.registerAdmin = async (req, res) => {
-  res.status(403).json({ message: 'Registration is disabled. Use a pre-configured admin account.' });
+exports.loginWithPin = async (req, res) => {
+  const { pin } = req.body;
+
+  try {
+    const pinCount = await AuthPin.countDocuments();
+
+    // Bootstrap mode: No PINs exist, allow initial access with the secret 1234 key
+    if (pinCount === 0) {
+      if (pin === BOOTSTRAP_PIN) {
+        const token = jwt.sign(
+          { id: 'root', label: 'Initial Admin', role: 'admin' }, 
+          'secretkey', 
+          { expiresIn: '8h' }
+        );
+        return res.json({ token, username: 'Initial Admin (Setup Mode)' });
+      } else {
+        return res.status(401).json({ message: 'Setup Required: Enter default PIN' });
+      }
+    }
+
+    const allPins = await AuthPin.find({});
+    let matchingPin = null;
+
+    for (const p of allPins) {
+      const isMatch = await bcrypt.compare(pin, p.pin);
+      if (isMatch) {
+        matchingPin = p;
+        break;
+      }
+    }
+
+    if (!matchingPin) {
+      return res.status(401).json({ message: 'Invalid Access PIN' });
+    }
+
+    const token = jwt.sign(
+      { id: matchingPin._id, label: matchingPin.label, role: matchingPin.role }, 
+      'secretkey', 
+      { expiresIn: '8h' }
+    );
+    res.json({ token, username: matchingPin.label });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
-exports.loginAdmin = async (req, res) => {
-  const { username, password } = req.body;
+exports.getPins = async (req, res) => {
+  try {
+    const pins = await AuthPin.find({}, '-pin'); // Exclude hash
+    res.json(pins);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
-  const admin = ADMINS.find(a => a.username === username && a.password === password);
-  if (!admin) {
-    return res.status(401).json({ message: 'Invalid credentials' });
+exports.createPin = async (req, res) => {
+  const { pin, label, role } = req.body;
+  
+  if (!/^\d{4}$/.test(pin)) {
+    return res.status(400).json({ message: 'PIN must be exactly 4 digits' });
   }
 
-  const token = jwt.sign({ username: admin.username }, 'secretkey', { expiresIn: '8h' });
-  res.json({ token, username: admin.username });
+  try {
+    const hashedPin = await bcrypt.hash(pin, 10);
+    const newPin = new AuthPin({ pin: hashedPin, label, role });
+    await newPin.save();
+    res.status(201).json({ message: 'Access PIN created' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.deletePin = async (req, res) => {
+  try {
+    await AuthPin.findByIdAndDelete(req.params.id);
+    res.json({ message: 'PIN deleted' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 exports.getDashboardStats = async (req, res) => {

@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const API_URL = 'http://localhost:5001';
+
 const API = axios.create({
-  baseURL: 'http://localhost:5001',
+  baseURL: API_URL,
 });
 
 // Attach JWT to every request
@@ -14,9 +16,14 @@ API.interceptors.request.use((config) => {
 });
 
 // Auth
-export const loginAdmin = (data) => API.post('/api/admin/login', data);
+export const loginWithPin = (pin) => API.post('/api/admin/login-pin', { pin });
 export const getDashboardStats = () => API.get('/api/admin/stats');
-export const exportDonationsUrl = () => `http://localhost:5001/api/admin/export?token=${localStorage.getItem('token')}`;
+export const exportDonationsUrl = () => `${API_URL}/api/admin/export?token=${localStorage.getItem('token')}`;
+
+// PIN Management
+export const getPins = () => API.get('/api/admin/pins');
+export const createPin = (data) => API.post('/api/admin/pins', data);
+export const deletePin = (id) => API.delete(`/api/admin/pins/${id}`);
 
 // Donor
 export const searchDonor = (query) => API.get(`/api/donor/search/${encodeURIComponent(query)}`);
