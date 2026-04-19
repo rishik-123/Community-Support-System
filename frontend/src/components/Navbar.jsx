@@ -4,14 +4,23 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const username = localStorage.getItem('username');
-  const role = localStorage.getItem('role');
+  let role = null;
+  let username = 'User';
+  try {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      role = payload.role;
+      username = payload.label || 'User';
+    }
+  } catch (err) {
+    console.error('Failed to parse token payload');
+  }
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    localStorage.removeItem('role');
     navigate('/login');
   };
 

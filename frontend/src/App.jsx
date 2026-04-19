@@ -20,15 +20,24 @@ function Layout({ children }) {
   );
 }
 
-// Helper to restrict access based on role
+// Helper to restrict access based on role securely by reading the JWT payload
 function RoleRoute({ children, allowedRoles }) {
-  const role = localStorage.getItem('role');
-  if (!allowedRoles.includes(role)) {
+  let role = null;
+  try {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      role = payload.role;
+    }
+  } catch (err) {
+    console.error('Failed to parse token payload');
+  }
+
+  if (!role || !allowedRoles.includes(role)) {
     return <Navigate to="/donate" replace />;
   }
   return children;
 }
-
 export default function App() {
   return (
     <BrowserRouter>

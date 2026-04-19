@@ -66,13 +66,12 @@ export default function Login() {
     try {
       const res = await loginWithPin(pinString);
       localStorage.setItem('token', res.data.token);
-      localStorage.setItem('username', res.data.username);
-      localStorage.setItem('role', res.data.role);
-
-      if (res.data.role === 'operator') {
-        navigate('/donate');
-      } else {
+      
+      // Navigate to correct page depending on the role inside the login response
+      if (res.data.role === 'admin') {
         navigate('/dashboard');
+      } else {
+        navigate('/donate');
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Invalid PIN.');
