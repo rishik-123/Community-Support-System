@@ -66,4 +66,4 @@ export const addPublicDonor = (data) => axios.post('http://localhost:5001/api/do
 // Receipts
 export const addDonation = (data) => API.post('/api/receipt/donate', data);
 export const getReceiptByNumber = (receiptNo) => API.get(`/api/receipt/receipt/${receiptNo}`);
-export const downloadReceiptUrl = (receiptNo) => `http://localhost:5001/api/receipt/download/${receiptNo}`;
+export const downloadReceiptUrl = (receiptNo) => `http://localhost:5001/api/receipt/download/${receiptNo}?token=${localStorage.getItem('token')}`;
