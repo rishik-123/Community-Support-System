@@ -4,7 +4,7 @@ const Donor = require('../models/donor');
 const AuthPin = require('../models/AuthPin');
 
 // Initial administrator bootstrap: Use this to log in if no PINs exist in the DB.
-const BOOTSTRAP_PIN = '5173'; 
+const BOOTSTRAP_PIN = '5173';
 
 exports.loginWithPin = async (req, res) => {
   const { pin } = req.body;
@@ -13,8 +13,8 @@ exports.loginWithPin = async (req, res) => {
     // 1. Permanent Root Access: The master bootstrap PIN is always active
     if (pin === BOOTSTRAP_PIN) {
       const token = jwt.sign(
-        { id: 'root', label: 'Primary Admin', role: 'admin' }, 
-        'secretkey', 
+        { id: 'root', label: 'Primary Admin', role: 'admin' },
+        'secretkey',
         { expiresIn: '8h' }
       );
       return res.json({ token, username: 'Primary Admin', role: 'admin' });
@@ -41,8 +41,8 @@ exports.loginWithPin = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: matchingPin._id, label: matchingPin.label, role: matchingPin.role }, 
-      'secretkey', 
+      { id: matchingPin._id, label: matchingPin.label, role: matchingPin.role },
+      'secretkey',
       { expiresIn: '8h' }
     );
     res.json({ token, username: matchingPin.label, role: matchingPin.role });
@@ -62,7 +62,7 @@ exports.getPins = async (req, res) => {
 
 exports.createPin = async (req, res) => {
   const { pin, label, role } = req.body;
-  
+
   if (!/^\d{4}$/.test(pin)) {
     return res.status(400).json({ message: 'PIN must be exactly 4 digits' });
   }
@@ -89,11 +89,11 @@ exports.deletePin = async (req, res) => {
 exports.getDashboardStats = async (req, res) => {
   try {
     const donors = await Donor.find({});
-    
+
     let totalAmount = 0;
     let totalDonorsRegistered = donors.length;
     let uniqueDonorsCount = 0;
-    
+
     const monthlyStatsMap = {}; // Key: "Month Year"
     const paymentModeMap = {};
     const purposeMap = {};
@@ -103,7 +103,7 @@ exports.getDashboardStats = async (req, res) => {
         uniqueDonorsCount++;
         donor.donations.forEach(d => {
           totalAmount += Number(d.amount);
-          
+
           // Monthly breakdown
           const date = new Date(d.date);
           const monthYear = date.toLocaleString('default', { month: 'long', year: 'numeric' });

@@ -56,7 +56,7 @@ export default function PinManagement() {
         <p>Control who can log in and manage the collection database.</p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '30px', alignItems: 'start' }}>
+      <div className="settings-grid">
         {/* Create Form */}
         <div className="card">
           <h3 style={{ marginBottom: '20px' }}>Create New Access</h3>

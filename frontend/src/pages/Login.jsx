@@ -10,6 +10,13 @@ export default function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Check for expiration redirect
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('expired')) {
+      setError('Your session has expired. Please log in again.');
+      // remove param from url
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
     // Focus first input on mount
     inputRefs[0].current.focus();
   }, []);
@@ -121,7 +128,7 @@ export default function Login() {
             ))}
           </div>
 
-          <p style={{ textAlign: 'center', fontSize: '14px', color: 'rgba(255,255,255,0.6)', marginBottom: '20px' }}>
+          <p style={{ textAlign: 'center', fontSize: '14px', color: 'var(--text-muted)', marginBottom: '20px' }}>
             Enter your 4-digit access code
           </p>
 
@@ -138,7 +145,7 @@ export default function Login() {
         </form>
 
         <div className="login-footer" style={{ marginTop: '24px', textAlign: 'center' }}>
-          <Link to="/" style={{ color: 'rgba(255,255,255,0.8)', textDecoration: 'none', fontSize: '14px' }}>
+          <Link to="/" style={{ color: 'var(--primary)', textDecoration: 'none', fontSize: '14px', fontWeight: 500 }}>
             ← Back to Public Registration
           </Link>
         </div>

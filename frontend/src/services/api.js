@@ -15,6 +15,23 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
+// Auto-Logout on Token Expiry
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      const isLoginRoute = window.location.pathname === '/login';
+      if (!isLoginRoute) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        localStorage.removeItem('role');
+        window.location.href = '/login?expired=true';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Auth
 export const loginWithPin = (pin) => API.post('/api/admin/login-pin', { pin });
 export const getDashboardStats = () => API.get('/api/admin/stats');
