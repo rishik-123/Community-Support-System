@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const API_URL = 'http://localhost:5001';
+
 const API = axios.create({
-  baseURL: 'http://localhost:5001',
+  baseURL: API_URL,
 });
 
 // Attach JWT to every request
@@ -13,10 +15,32 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
+// Auto-Logout on Token Expiry
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      const isLoginRoute = window.location.pathname === '/login';
+      if (!isLoginRoute) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        localStorage.removeItem('role');
+        window.location.href = '/login?expired=true';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Auth
-export const loginAdmin = (data) => API.post('/api/admin/login', data);
+export const loginWithPin = (pin) => API.post('/api/admin/login-pin', { pin });
 export const getDashboardStats = () => API.get('/api/admin/stats');
-export const exportDonationsUrl = () => `http://localhost:5001/api/admin/export?token=${localStorage.getItem('token')}`;
+export const exportDonationsUrl = () => `${API_URL}/api/admin/export?token=${localStorage.getItem('token')}`;
+
+// PIN Management
+export const getPins = () => API.get('/api/admin/pins');
+export const createPin = (data) => API.post('/api/admin/pins', data);
+export const deletePin = (id) => API.delete(`/api/admin/pins/${id}`);
 
 // Donor
 export const searchDonor = (query) => API.get(`/api/donor/search/${encodeURIComponent(query)}`);
@@ -27,6 +51,7 @@ export const updateDonorProfile = (mobile, data) => API.put(`/api/donor/profile/
     'Content-Type': 'multipart/form-data'
   }
 });
+export const deleteDonorProfile = (mobile) => API.delete(`/api/donor/profile/${encodeURIComponent(mobile)}`);
 export const addDonor = (data) => API.post('/api/donor/add', data, {
   headers: {
     'Content-Type': 'multipart/form-data'
@@ -41,4 +66,4 @@ export const addPublicDonor = (data) => axios.post('http://localhost:5001/api/do
 // Receipts
 export const addDonation = (data) => API.post('/api/receipt/donate', data);
 export const getReceiptByNumber = (receiptNo) => API.get(`/api/receipt/receipt/${receiptNo}`);
-export const downloadReceiptUrl = (receiptNo) => `http://localhost:5001/api/receipt/download/${receiptNo}`;
+export const downloadReceiptUrl = (receiptNo) => `http://localhost:5001/api/receipt/download/${receiptNo}?token=${localStorage.getItem('token')}`;

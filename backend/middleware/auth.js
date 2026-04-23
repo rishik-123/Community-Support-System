@@ -16,7 +16,9 @@ module.exports = (req, res, next) => {
     req.admin = decoded;
     next();
   } catch (err) {
-    console.error(err);
-    res.status(401).json({ message: 'Invalid token' });
+    if (err.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: 'Session expired. Please log in again.' });
+    }
+    return res.status(401).json({ message: 'Invalid or missing authentication token' });
   }
 };
