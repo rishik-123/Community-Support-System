@@ -2,29 +2,31 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-const connectDB = require('../config/db');   // ✅ correct path
+const connectDB = require('../config/db');
 
 const app = express();
 
-//  Connect MongoDB first
-connectDB();
-
-//  Middleware
+// ✅ Middleware FIRST
 app.use(cors());
 app.use(express.json());
 
-//  Routes
+// ✅ Connect MongoDB
+connectDB();
+
+// ✅ Routes
 app.use('/api/donor', require('../routes/donorroutes'));
 app.use('/api/receipt', require('../routes/receiptroutes'));
 app.use('/api/admin', require('../routes/adminroutes'));
 app.use('/api/import', require('../routes/importroutes'));
-//  Test route (very useful to check server)
+
+// ✅ Test route
 app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
-// Start server
-const port = process.env.PORT || 5000;
-app.listen(port, () => {
-  console.log(`Running on port ${port}`);
+// ✅ IMPORTANT FOR RENDER (do NOT hardcode port)
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on ${PORT}`);
 });
