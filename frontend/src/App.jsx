@@ -5,6 +5,7 @@ import DonorRegistration from './pages/DonorRegistration';
 import PublicRegistration from './pages/PublicRegistration';
 import InvoiceLookup from './pages/InvoiceLookup';
 import Dashboard from './pages/Dashboard';
+import PinManagement from './pages/PinManagement';
 import DonorLookup from './pages/DonorLookup';
 import AllDonors from './pages/AllDonors';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -19,11 +20,35 @@ function Layout({ children }) {
   );
 }
 
+// Helper to restrict access based on role securely by reading the JWT payload
+function RoleRoute({ children, allowedRoles }) {
+  let role = null;
+  try {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      role = payload.role;
+    }
+  } catch (err) {
+    console.error('Failed to parse token payload');
+  }
+
+  if (!role || !allowedRoles.includes(role)) {
+    return <Navigate to="/donate" replace />;
+  }
+  return children;
+}
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+        
+        {/* Public Route */}
+        <Route path="/" element={<PublicRegistration />} />
+        <Route path="/register" element={<PublicRegistration />} />
+
+        {/* Protected Routes */}
         <Route
           path="/donate"
           element={
@@ -32,11 +57,25 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* Admin-Only Routes */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <RoleRoute allowedRoles={['admin']}>
+                <Layout><Dashboard /></Layout>
+              </RoleRoute>
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/register-donor"
           element={
             <ProtectedRoute>
-              <Layout><DonorRegistration /></Layout>
+              <RoleRoute allowedRoles={['admin']}>
+                <Layout><DonorRegistration /></Layout>
+              </RoleRoute>
             </ProtectedRoute>
           }
         />
@@ -44,7 +83,9 @@ export default function App() {
           path="/invoice"
           element={
             <ProtectedRoute>
-              <Layout><InvoiceLookup /></Layout>
+              <RoleRoute allowedRoles={['admin']}>
+                <Layout><InvoiceLookup /></Layout>
+              </RoleRoute>
             </ProtectedRoute>
           }
         />
@@ -52,7 +93,9 @@ export default function App() {
           path="/donor-lookup"
           element={
             <ProtectedRoute>
-              <Layout><DonorLookup /></Layout>
+              <RoleRoute allowedRoles={['admin']}>
+                <Layout><DonorLookup /></Layout>
+              </RoleRoute>
             </ProtectedRoute>
           }
         />
@@ -60,7 +103,9 @@ export default function App() {
           path="/donor-lookup/:phone"
           element={
             <ProtectedRoute>
-              <Layout><DonorLookup /></Layout>
+              <RoleRoute allowedRoles={['admin']}>
+                <Layout><DonorLookup /></Layout>
+              </RoleRoute>
             </ProtectedRoute>
           }
         />
@@ -68,20 +113,23 @@ export default function App() {
           path="/donors"
           element={
             <ProtectedRoute>
-              <Layout><AllDonors /></Layout>
+              <RoleRoute allowedRoles={['admin']}>
+                <Layout><AllDonors /></Layout>
+              </RoleRoute>
             </ProtectedRoute>
           }
         />
         <Route
-          path="/dashboard"
+          path="/manage-pins"
           element={
             <ProtectedRoute>
-              <Layout><Dashboard /></Layout>
+              <RoleRoute allowedRoles={['admin']}>
+                <Layout><PinManagement /></Layout>
+              </RoleRoute>
             </ProtectedRoute>
           }
         />
-        <Route path="/" element={<PublicRegistration />} />
-        <Route path="/register" element={<PublicRegistration />} />
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
